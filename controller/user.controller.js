@@ -1,4 +1,6 @@
 require("dotenv").config()
 
-
-module.exports ={}
+const registerUser = (req,res)=>{
+    
+}
+module.exports ={registerUser}

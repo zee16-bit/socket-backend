@@ -3,7 +3,14 @@ require("dotenv").config()
 const app = express()
 const PORT = process.env.PORT
 const URI = process.env.URI
-const route = require("./routes/user.routes")
+const userRouter = require("./routes/user.routes")
+const cors = require("cors")
+
+
+app.use(cors())
+app.use(express.urlencoded({extended:true})) //what do they do
+app.use(express.json) //same
+app.use("/user",userRouter)
 
 const connection = app.listen(PORT,(err)=>{
     if(err){
@@ -12,6 +19,7 @@ const connection = app.listen(PORT,(err)=>{
         console.log(`app has started at PORT: ${PORT}`)
     }
 })
+
 const socketio = require("socket.io")
 const { default: mongoose } = require("mongoose")
 
@@ -26,10 +34,14 @@ mongoose.connect(URI)
 
 const io = socketio(connection,{cors:{options:"*"}})
 io.on("connection",(stream)=>{
-    console.log(stream)
     console.log("User connected")
     stream.on("newmessage",(message)=>{
-        console.log(message, stream.id)
         io.emit("message",message)
+    })
+    stream.on("username",(message)=>{
+        console.log(message)
+    })
+    stream.on("typing",(message)=>{
+        console.log(message)
     })
 })
