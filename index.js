@@ -5,11 +5,12 @@ const PORT = process.env.PORT
 const URI = process.env.URI
 const userRouter = require("./routes/user.routes")
 const cors = require("cors")
+const {userModel} = require("./model/user.model")
 
 
 app.use(cors())
 app.use(express.urlencoded({extended:true})) //what do they do
-app.use(express.json) //same
+app.use(express.json()) //same
 app.use("/user",userRouter)
 
 const connection = app.listen(PORT,(err)=>{
@@ -38,10 +39,12 @@ io.on("connection",(stream)=>{
     stream.on("newmessage",(message)=>{
         io.emit("message",message)
     })
-    stream.on("username",(message)=>{
-        console.log(message)
-    })
-    stream.on("typing",(message)=>{
-        console.log(message)
+    stream.on("username",async(message)=>{
+        const user = await userModel.find()
+        user.forEach(element => {
+            if(message === element.username){
+                io.emit("fallmessage","Username already exist")
+            }
+        });
     })
 })
