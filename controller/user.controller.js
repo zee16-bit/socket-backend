@@ -22,6 +22,25 @@ const registerUser = async(req,res)=>{
     }catch(err){
         console.log(err)
     }
-
 }
-module.exports ={registerUser}
+
+const signin = async(req,res)=>{
+    const {email}= req.body
+    const {password}= req.body
+    try{
+        const user = await userModel.findOne({email : email})
+        if(!user){
+            res.send({status:false,message:"Wrong credentials"})
+        }else{
+        const isMatch = await bcrypt.compare(password, user.password)
+        if(isMatch){
+            res.status(200).send({status:true, message:"Logging in"})
+        }else{
+            res.send({status:false,message:"Wrong credentials"})
+        }
+        }
+    }catch(err){
+        console.log(err)
+    }
+}
+module.exports ={registerUser, signin}

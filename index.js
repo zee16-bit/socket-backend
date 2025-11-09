@@ -40,11 +40,9 @@ io.on("connection",(stream)=>{
         io.emit("message",message)
     })
     stream.on("username",async(message)=>{
-        const user = await userModel.find()
-        user.forEach(element => {
-            if(message === element.username){
-                io.emit("fallmessage","Username already exist")
-            }
-        });
+        const user = await userModel.findOne({"username":message})
+        if(user){
+            io.emit("fallmessage","Username already exist")
+        }
     })
 })
