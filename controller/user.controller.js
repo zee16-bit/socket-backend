@@ -1,7 +1,7 @@
 require("dotenv").config()
 const bcrypt = require("bcryptjs")
 const {userModel} = require("../model/user.model")
-
+//register
 const registerUser = async(req,res)=>{
     try{
     const {usernam} = req.body
